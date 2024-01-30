@@ -22,7 +22,32 @@ semicastrod_surf = pygame.image.load('rods/semicastrod.png').convert_alpha()
 space = False
 spaceHold = 0
 
-# fishies
+# fishies (something is going to go terribly wrong)
+class Fishies(pygame.sprite.Sprite):
+    def __init__(self, color):
+        match color:
+            case 0:
+                redfishies_surf = pygame.image.load('fishies/redfishies.png').convert_alpha()
+                
+            case 1:
+                orangefishies_surf = pygame.image.load('fishies/orangefishies.png').convert_alpha()
+        
+        y_pos = random.randint(405, 450)
+        self.rect = self.image.get_rect(center = (0, y_pos))
+
+    def update(self):
+        self.rect.x +=1
+        self.destroy()
+
+    def destroy(self):
+        if self.rect.x > 1280:
+            self.kill
+
+fishies_group = pygame.sprite.Group()
+
+        
+
+"""
 redfishies_surf = pygame.image.load('fishies/redfishies.png').convert_alpha()
 redfishies_rect = redfishies_surf.get_rect(midright = (0, 350))
 
@@ -51,14 +76,15 @@ allFishiesRect = [redfishies_rect, orangefishies_rect, yellowfishies_rect, green
 leftFishiesOnScreen = []
 rightFishiesOnScreen = []
 fishyResetTimer = 0
-
-# timer for debugging
+"""
 
 
 
 def flip_a_coin():
     return random.randint(0, 1)
 
+
+# ADD OBSTACLES
 while True:
 
     
@@ -92,6 +118,7 @@ while True:
     else: 
         screen.blit(castrod_surf, (400, 0))
 
+    """
     # blit fishies
     
     # add a fishy every 5 seconds
@@ -143,6 +170,7 @@ while True:
 
 
     fishyResetTimer+=1
+    """
 
     # timer for debugging
     timer = int(pygame.time.get_ticks() / 1000)
