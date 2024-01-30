@@ -46,17 +46,30 @@ class Fishies(pygame.sprite.Sprite):
         
         y_pos = random.randint(540, 575)
         self.rect = self.image.get_rect(center = (0, y_pos))
-        self.speed = random.randint(5, 30)/10
+        self.speed = random.randint(15, 30)/10
+        self.inWater = False
+        self.prevInWater = False
 
     def update(self):
         self.rect.x += self.speed
+
+        # checks if rod is in water
+        if space == True and spaceHold >= 90:
+            self.inWater = True
+        else:
+            self.inWater = False
+
         self.destroy()
+        self.prevInWater = self.inWater
 
     def destroy(self):
         if self.rect.x > 1280:
             self.kill()
-        elif self.rect.x >= 500 and self.rect.x <= 600:
-            self.speed = 0.5
+        elif self.rect.x >= 525 and self.rect.x <= 625:
+            self.rect.x-=(self.speed-1)
+            if self.inWater == False and self.prevInWater == True:
+                print("caught")
+                self.kill()
 
 fishies_group = pygame.sprite.Group()
 timer = 0
@@ -121,7 +134,7 @@ while True:
         fishies_group.add(Fishies(random.randint(0, 6)))
 
 
-                
+    
     # blit background
     screen.blit(sky_surf, (0, 0))
     screen.blit(ocean_surf, (ocean_surf_pos, 475))
@@ -211,6 +224,10 @@ while True:
     screen.blit(timer_surf, (600, 100))
 
     timer+=1
+
+    # test, delete later
+    pygame.draw.line(screen, "Red", (525, 0), (525, 720)) 
+    pygame.draw.line(screen, "Red", (625, 0), (625, 720)) 
     
     pygame.display.update()
     clock.tick(60)
