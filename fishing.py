@@ -22,6 +22,11 @@ semicastrod_surf = pygame.image.load('rods/semicastrod.png').convert_alpha()
 space = False
 spaceHold = 0
 
+# rewards
+crate1_surf = pygame.image.load('rewards/crate1.png').convert_alpha()
+crate2_surf = pygame.image.load('rewards/crate2.png').convert_alpha()
+common_surf = pygame.image.load('rewards/common.png').convert_alpha()
+
 # fishies (something is going to go terribly wrong)
 class Fishies(pygame.sprite.Sprite):
     def __init__(self, color):
@@ -65,7 +70,7 @@ class Fishies(pygame.sprite.Sprite):
     def destroy(self):
         if self.rect.x > 1280:
             self.kill()
-        elif self.rect.x >= 525 and self.rect.x <= 625:
+        elif self.rect.x >= 550 and self.rect.x <= 600:
             self.rect.x-=(self.speed-1)
             if self.inWater == False and self.prevInWater == True:
                 print("caught")
@@ -160,7 +165,10 @@ while True:
         spaceHold+=1
     else: 
         screen.blit(castrod_surf, (400, 0))
-
+    
+    # blit fish + crates
+    screen.blit(common_surf, (400, 300))
+    screen.blit(crate1_surf, (400, 600))
 
 
     if True:
@@ -218,16 +226,13 @@ while True:
         fishyResetTimer+=1
         """
 
-    # timer for debugging
-    timer1 = int(pygame.time.get_ticks() / 1000)
-    timer_surf = font.render(f'Seconds passed: {timer1}',False,(64,64,64))
-    screen.blit(timer_surf, (600, 100))
+    # # timer for debugging
+    # timer1 = int(pygame.time.get_ticks() / 1000)
+    # timer_surf = font.render(f'Seconds passed: {timer1}',False,(64,64,64))
+    # screen.blit(timer_surf, (600, 100))
 
     timer+=1
 
-    # test, delete later
-    pygame.draw.line(screen, "Red", (525, 0), (525, 720)) 
-    pygame.draw.line(screen, "Red", (625, 0), (625, 720)) 
     
     pygame.display.update()
     clock.tick(60)
