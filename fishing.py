@@ -1,5 +1,6 @@
 import pygame
 from sys import exit
+from sys import stdout
 import random
 
 pygame.init()
@@ -9,10 +10,15 @@ clock = pygame.time.Clock()
 
 font = pygame.font.Font('font/Pixeltype.ttf', 50)
 
-# background
+# ocean
 ocean_surf = pygame.image.load('ocean/ocean.png').convert_alpha()
 ocean_surf_pos = -700
+
+# sky
 sky_surf = pygame.image.load('sky/sky.png').convert_alpha()
+sunset_surf = pygame.image.load('sky/sunset.png').convert_alpha()
+magical_surf = pygame.image.load('sky/magical.png').convert_alpha()
+daysLoggedIn = 0
 
 # rod surfaces
 castrod_surf = pygame.image.load('rods/castrod.png').convert_alpha()
@@ -26,6 +32,15 @@ spaceHold = 0
 crate1_surf = pygame.image.load('rewards/crate1.png').convert_alpha()
 crate2_surf = pygame.image.load('rewards/crate2.png').convert_alpha()
 common_surf = pygame.image.load('rewards/common.png').convert_alpha()
+rare_surf = pygame.image.load('rewards/rare.png').convert_alpha()
+superrare_surf = pygame.image.load('rewards/superrare.png').convert_alpha()
+epic_surf = pygame.image.load('rewards/epic.png').convert_alpha()
+Wahoo_surf = pygame.image.load('rewards/Wahoo.png').convert_alpha()
+
+showFish = 0
+caughtFish = random.choice([crate1_surf, crate2_surf, common_surf, rare_surf, superrare_surf, epic_surf, Wahoo_surf])
+
+
 
 # fishies (something is going to go terribly wrong)
 class Fishies(pygame.sprite.Sprite):
@@ -55,6 +70,7 @@ class Fishies(pygame.sprite.Sprite):
         self.inWater = False
         self.prevInWater = False
 
+        
     def update(self):
         self.rect.x += self.speed
 
@@ -63,18 +79,24 @@ class Fishies(pygame.sprite.Sprite):
             self.inWater = True
         else:
             self.inWater = False
-
+        
         self.destroy()
         self.prevInWater = self.inWater
 
     def destroy(self):
+
         if self.rect.x > 1280:
             self.kill()
         elif self.rect.x >= 550 and self.rect.x <= 600:
             self.rect.x-=(self.speed-1)
             if self.inWater == False and self.prevInWater == True:
-                print("caught")
+                print('caught')
+
+                
                 self.kill()
+    
+
+
 
 fishies_group = pygame.sprite.Group()
 timer = 0
@@ -134,14 +156,27 @@ while True:
                 space = False
                 spaceHold = 0
 
+    if stdout == "caught":
+        showFish+=1
+
 
     if timer % random.randint(300, 400) == 0:
         fishies_group.add(Fishies(random.randint(0, 6)))
 
 
     
-    # blit background
+    # blit sky
     screen.blit(sky_surf, (0, 0))
+
+    # blit ocean
+    match daysLoggedIn:
+        case 5:
+            screen.blit(sunset_surf, (0, 0))
+        case 10:
+            screen.blit(magical_surf, (0, 0))
+        case _:
+            screen.blit(sky_surf, (0, 0))
+
     screen.blit(ocean_surf, (ocean_surf_pos, 475))
 
     # blit fishies
@@ -165,74 +200,26 @@ while True:
         spaceHold+=1
     else: 
         screen.blit(castrod_surf, (400, 0))
+
+
+
+    # blit reward
+    if showFish != 0:
+        screen.blit(caughtFish, (0, 0))
+        showFish+=1
+        if showFish > 200: 
+            showFish = 0
+            caughtFish = random.choice([crate1_surf, crate2_surf, common_surf, rare_surf, superrare_surf, epic_surf, Wahoo_surf])
     
-    # blit fish + crates
-    screen.blit(common_surf, (400, 300))
-    screen.blit(crate1_surf, (400, 600))
 
-
-    if True:
-        """
-        # blit fishies
-        
-        # add a fishy every 5 seconds
-        if fishyResetTimer % 300 == 0:
-            # change the last two numbers to better randomize the y-coord spawn
-            # first val is the color, second val is y-coord
-            done = False
-            color = random.randint(0,6)
-            if flip_a_coin():
-                for i in range(len(leftFishiesOnScreen)):
-                    if color in leftFishiesOnScreen[i]:
-                        done = True
-                        break
-                        
-                if done == False: leftFishiesOnScreen.append([color, random.randint(405, 450)])
-                
-            else:
-                for i in range(len(rightFishiesOnScreen)):
-                    if color in rightFishiesOnScreen[i]:
-                        done = True
-                        break
-                        
-                if done == False: rightFishiesOnScreen.append([color, random.randint(405, 450)])
-
-        print(leftFishiesOnScreen)
-        print(rightFishiesOnScreen)
-        print()
-        # blits all the fishies going left
-        for i in leftFishiesOnScreen:
-            if allFishiesRect[i[0]].x == 0:
-                allFishiesRect[i[0]].x = 1280
-
-            allFishiesRect[i[0]].x -=1
-            allFishiesRect[i[0]].y = i[1] # y val is second item in subarr
-            screen.blit(allFishiesSurf[i[0]], allFishiesRect[i[0]])
-            if allFishiesRect[i[0]].right < 0:
-                leftFishiesOnScreen.remove(i) # IF FISH START RANDOMLY DISAPPEARING ITS BECAUSE .remove() SUCKS
-        
-        # blits all the fishies going right
-        for i in rightFishiesOnScreen:
-            # if allFishiesRect[i[0]].x != 0:
-            #     allFishiesRect[i[0]].x = 0
-
-            allFishiesRect[i[0]].x +=1
-            allFishiesRect[i[0]].y = i[1] # y val is second item in subarr
-            screen.blit(allFishiesSurf[i[0]], allFishiesRect[i[0]])
-            if allFishiesRect[i[0]].left > 1280:
-                rightFishiesOnScreen.remove(i)
-
-
-        fishyResetTimer+=1
-        """
 
     # # timer for debugging
     # timer1 = int(pygame.time.get_ticks() / 1000)
     # timer_surf = font.render(f'Seconds passed: {timer1}',False,(64,64,64))
     # screen.blit(timer_surf, (600, 100))
+        
 
     timer+=1
 
-    
     pygame.display.update()
     clock.tick(60)
