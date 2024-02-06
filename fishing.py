@@ -42,22 +42,22 @@ def resetCaughtFish():
     return caughtFish
 def resetDiscounts():
     discounts = random.choice([
-    "10% off",
-    "5% off",
-    "5% off",
-    "2.5% off",
-    "2.5% off",
-    "2.5% off",
+    "10% discount",
+    "5% discount",
+    "5% discount",
+    "2.5% discount",
+    "2.5% discount",
+    "2.5% discount",
     "free chips",
     "free chips",
     "free chips",
-    "25% off one item",
-    "25% off one item",
-    "25% off one item",
-    "25% off one item",
-    "25% off one item",
-    "nothing"
-    "nothing"
+    "25% discount one item",
+    "25% discount one item",
+    "25% discount one item",
+    "25% discount one item",
+    "25% discount one item",
+    "nothing",
+    "nothing",
     "nothing"
 ])
     return discounts
@@ -251,17 +251,25 @@ while True:
                     rarity = "epic"
                 elif caughtFish == Wahoo_surf:
                     rarity = "Wahoo"
+                    discounts = "Free taco"
                 
                     
                 reward_surf = font.render(f"You caught a {rarity}!", False, (0, 0, 0))
-                reward_rect = reward_surf.get_rect(center = (640, 100))
+                reward_rect = reward_surf.get_rect(center = (640, 50))
                 discount_surf = font.render(f"Here's a {discounts}", False, (0, 0, 0))
-                discount_rect = discount_surf.get_rect(center = (640, 200))
+                discount_rect = discount_surf.get_rect(center = (640, 150))
                 screen.blit(reward_surf, reward_rect)
                 screen.blit(discount_surf, discount_rect)
+            elif spaceHold:
+                elapsed_time = 0
+                fish.caught = False
+                fishies_group.empty()
+                
             else: 
                 caughtFish = resetCaughtFish()
                 discounts = resetDiscounts()
+                fishies_group.empty()
+        
 
 
 
