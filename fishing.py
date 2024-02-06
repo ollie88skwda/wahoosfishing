@@ -17,7 +17,11 @@ ocean_surf_pos = -700
 sky_surf = pygame.image.load('sky/sky.png').convert_alpha()
 sunset_surf = pygame.image.load('sky/sunset.png').convert_alpha()
 magical_surf = pygame.image.load('sky/magical.png').convert_alpha()
-daysLoggedIn = 5
+
+
+daysLoggedIn = 1
+
+
 
 # rod surfaces
 castrod_surf = pygame.image.load('rods/castrod.png').convert_alpha()
@@ -239,7 +243,7 @@ while True:
     for fish in fishies_group:
         if fish.caught:
             elapsed_time = pygame.time.get_ticks() - fish.caught_time
-            if elapsed_time < 2000 and not spaceHold:
+            if elapsed_time < 4000 and not spaceHold:
                 screen.blit(caughtFish, (680, 170))
                 # "YOU CAUGHT A FISH!"
                 # match statements hate me sooooo
