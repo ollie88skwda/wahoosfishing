@@ -17,7 +17,7 @@ ocean_surf_pos = -700
 sky_surf = pygame.image.load('sky/sky.png').convert_alpha()
 sunset_surf = pygame.image.load('sky/sunset.png').convert_alpha()
 magical_surf = pygame.image.load('sky/magical.png').convert_alpha()
-daysLoggedIn = 0
+daysLoggedIn = 5
 
 # rod surfaces
 castrod_surf = pygame.image.load('rods/castrod.png').convert_alpha()
@@ -58,7 +58,13 @@ def resetDiscounts():
     "25% discount one item",
     "nothing",
     "nothing",
-    "nothing"
+    "nothing",
+    "rare fishing rod",
+    "rare fishing rod",
+    "rare fishing rod",
+    "epic fishing rod",
+    "epic fishing rod",
+    "golden fishing rod",
 ])
     return discounts
 
@@ -184,7 +190,7 @@ while True:
                 spaceHold = 0
 
 
-    if timer % random.randint(200, 300) == 0:
+    if timer % random.randint(150, 350) == 0:
         fishies_group.add(Fishies(random.randint(0, 6)))
 
     
