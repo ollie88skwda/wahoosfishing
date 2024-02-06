@@ -1,6 +1,5 @@
 import pygame
 from sys import exit
-from sys import stdout
 import random
 
 pygame.init()
@@ -8,7 +7,7 @@ screen = pygame.display.set_mode((1280, 720))
 pygame.display.set_caption("Fishing")
 clock = pygame.time.Clock()
 
-font = pygame.font.Font('font/Pixeltype.ttf', 50)
+font = pygame.font.Font('font/Pixeltype.ttf', 70)
 
 # ocean
 ocean_surf = pygame.image.load('ocean/ocean.png').convert_alpha()
@@ -38,8 +37,33 @@ epic_surf = pygame.image.load('rewards/epic.png').convert_alpha()
 Wahoo_surf = pygame.image.load('rewards/Wahoo.png').convert_alpha()
 
 showFish = 0
-caughtFish = random.choice([crate1_surf, crate2_surf, common_surf, rare_surf, superrare_surf, epic_surf, Wahoo_surf])
+def resetCaughtFish():
+    caughtFish = random.choice([crate1_surf, crate2_surf, common_surf, rare_surf, superrare_surf, epic_surf, Wahoo_surf])
+    return caughtFish
+def resetDiscounts():
+    discounts = random.choice([
+    "10% off",
+    "5% off",
+    "5% off",
+    "2.5% off",
+    "2.5% off",
+    "2.5% off",
+    "free chips",
+    "free chips",
+    "free chips",
+    "25% off one item",
+    "25% off one item",
+    "25% off one item",
+    "25% off one item",
+    "25% off one item",
+    "nothing"
+    "nothing"
+    "nothing"
+])
+    return discounts
 
+caughtFish = resetCaughtFish()
+discounts = resetDiscounts()
 
 
 # fishies (something is going to go terribly wrong)
@@ -66,9 +90,11 @@ class Fishies(pygame.sprite.Sprite):
         
         y_pos = random.randint(540, 575)
         self.rect = self.image.get_rect(center = (0, y_pos))
-        self.speed = random.randint(15, 30)/10
+        self.speed = random.randint(20, 30)/10
         self.inWater = False
         self.prevInWater = False
+        self.caught = False
+        self.caught_time = False
 
         
     def update(self):
@@ -87,19 +113,21 @@ class Fishies(pygame.sprite.Sprite):
 
         if self.rect.x > 1280:
             self.kill()
-        elif self.rect.x >= 550 and self.rect.x <= 600:
+        elif self.rect.x >= 500 and self.rect.x <= 625: # change these numbers to make it harder to catch
             self.rect.x-=(self.speed-1)
             if self.inWater == False and self.prevInWater == True:
-                print('caught')
+                print("caught")
+                self.caught = True
+                self.caught_time = pygame.time.get_ticks()
 
                 
-                self.kill()
+                # self.kill()
     
 
 
 
 fishies_group = pygame.sprite.Group()
-timer = 0
+timer = 200
 
         
 if True:
@@ -136,8 +164,7 @@ if True:
 
 
 
-def flip_a_coin():
-    return random.randint(0, 1)
+
 
 
 # ADD OBSTACLES
@@ -156,12 +183,11 @@ while True:
                 space = False
                 spaceHold = 0
 
-    if stdout == "caught":
-        showFish+=1
 
-
-    if timer % random.randint(300, 400) == 0:
+    if timer % random.randint(200, 300) == 0:
         fishies_group.add(Fishies(random.randint(0, 6)))
+
+    
 
 
     
@@ -204,13 +230,40 @@ while True:
 
 
     # blit reward
-    if showFish != 0:
-        screen.blit(caughtFish, (0, 0))
-        showFish+=1
-        if showFish > 200: 
-            showFish = 0
-            caughtFish = random.choice([crate1_surf, crate2_surf, common_surf, rare_surf, superrare_surf, epic_surf, Wahoo_surf])
-    
+    for fish in fishies_group:
+        if fish.caught:
+            elapsed_time = pygame.time.get_ticks() - fish.caught_time
+            if elapsed_time < 2000 and not spaceHold:
+                screen.blit(caughtFish, (680, 170))
+                # "YOU CAUGHT A FISH!"
+                # match statements hate me sooooo
+                if caughtFish == crate1_surf:
+                    rarity = "crate"
+                elif caughtFish == crate2_surf:
+                    rarity = "crate"
+                elif caughtFish == common_surf:
+                    rarity = "common"
+                elif caughtFish == rare_surf:
+                    rarity = "rare"
+                elif caughtFish == superrare_surf:
+                    rarity = "super rare"
+                elif caughtFish == epic_surf:
+                    rarity = "epic"
+                elif caughtFish == Wahoo_surf:
+                    rarity = "Wahoo"
+                
+                    
+                reward_surf = font.render(f"You caught a {rarity}!", False, (0, 0, 0))
+                reward_rect = reward_surf.get_rect(center = (640, 100))
+                discount_surf = font.render(f"Here's a {discounts}", False, (0, 0, 0))
+                discount_rect = discount_surf.get_rect(center = (640, 200))
+                screen.blit(reward_surf, reward_rect)
+                screen.blit(discount_surf, discount_rect)
+            else: 
+                caughtFish = resetCaughtFish()
+                discounts = resetDiscounts()
+
+
 
 
     # # timer for debugging
