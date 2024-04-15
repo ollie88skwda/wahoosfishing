@@ -273,6 +273,8 @@ while True:
             elif spaceHold:
                 elapsed_time = 0
                 fish.caught = False
+                caughtFish = resetCaughtFish()
+                discounts = resetDiscounts()
                 fishies_group.empty()
                 
             else: 
